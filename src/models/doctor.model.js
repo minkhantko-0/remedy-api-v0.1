@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
 const validator = require("validator");
+const mongoose = require("mongoose");
 
-const patientSchema = new mongoose.Schema(
+const doctorSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -11,7 +11,7 @@ const patientSchema = new mongoose.Schema(
     dateOfBirth: {
       type: Date,
       required: true,
-      min: new Date(),
+      max: new Date(),
     },
     email: {
       type: String,
@@ -22,15 +22,14 @@ const patientSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
-    avatar: {}, //TODO: to config patient profile
+    avatar: {}, //TODO: to config doctor profile
     Gender: {
       type: String,
       required: true,
     },
-    Diagnosis: {
+    specialization: {
       type: String,
       required: true,
-      trim: true,
     },
   },
   {
@@ -41,4 +40,4 @@ const patientSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Patient", patientSchema);
+module.exports = mongoose.model("Doctor", doctorSchema, 'doctors');
