@@ -9,9 +9,8 @@ const patientSchema = new mongoose.Schema(
       trim: true,
     },
     dateOfBirth: {
-      type: Date,
+      type: String,
       required: true,
-      min: new Date(),
     },
     email: {
       type: String,
@@ -22,12 +21,15 @@ const patientSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
-    avatar: {}, //TODO: to config patient profile
-    Gender: {
+    avatar: {
+      type: Buffer,
+    },
+    gender: {
       type: String,
+      enum: ["male", "female"],
       required: true,
     },
-    Diagnosis: {
+    diagnosis: {
       type: String,
       required: true,
       trim: true,
@@ -41,4 +43,15 @@ const patientSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Patient", patientSchema, 'patients');
+patientSchema.methods.toJSON = function () {
+  const patient = this;
+  const patientObject = patient.toObject();
+
+  delete patientObject.password;
+  delete patientObject.avatar;
+  delete patientObject.tokens;
+
+  return patientObject;
+};
+
+module.exports = mongoose.model("Patient", patientSchema, "patients");

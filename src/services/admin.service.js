@@ -29,7 +29,7 @@ const adminService = {
     await admin.save();
   },
 
-  getAdmins: async ({ name, _id, limit = 0, skip = 0, sort }) => {
+  getAdmins: async ({ name, _id, limit, skip, sort }) => {
     const options = {};
     const query = {};
 
@@ -53,9 +53,9 @@ const adminService = {
     return { data, count };
   },
 
-  updateAdmin: async (req) => {
-    const { id } = req.params;
-    const { name, password, email } = req.body;
+  updateAdmin: async ({ params, body }) => {
+    const { id } = params;
+    const { name, password, email } = body;
     const updates = {};
 
     if (name) {
@@ -69,7 +69,7 @@ const adminService = {
       updates.password = password;
     }
 
-    return AdminModel.findByIdAndUpdate(id, updates);
+    return AdminModel.findByIdAndUpdate(id, updates, { new: true });
   },
 
   updateLoggedInAdmin: async ({ admin, body }) => {
