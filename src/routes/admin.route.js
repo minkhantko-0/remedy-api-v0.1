@@ -10,9 +10,9 @@ const router = new Router();
 
 router.post("/admins/login", AdminHandler.loginAdmin);
 
-router.post("/admins/create", AdminHandler.createAdmin);
-
 router.use(isAuth);
+
+router.post("/admins/create", AdminHandler.createAdmin);
 
 router.post("/admins/logout", AdminHandler.logoutAdmin);
 
