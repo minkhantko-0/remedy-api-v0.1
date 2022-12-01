@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 
-const patientSchema = new mongoose.Schema(
+const EmployeeSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -30,10 +30,10 @@ const patientSchema = new mongoose.Schema(
       enum: ["male", "female"],
       required: true,
     },
-    diagnosis: {
+    jobType: {
       type: String,
       required: true,
-      trim: true,
+      enum: ["NURSE", "MAINTENANCE", "SECURITY", "EMERGENCY"],
     },
   },
   {
@@ -44,13 +44,13 @@ const patientSchema = new mongoose.Schema(
   }
 );
 
-patientSchema.methods.toJSON = function () {
-  const patient = this;
-  const patientObject = patient.toObject();
+EmployeeSchema.methods.toJSON = function () {
+  const employee = this;
+  const employeeObj = employee.toObject();
 
-  delete patientObject.avatar;
+  delete employeeObj.avatar;
 
-  return patientObject;
+  return employeeObj;
 };
 
-module.exports = mongoose.model("Patient", patientSchema, "patients");
+module.exports = mongoose.model("Employee", EmployeeSchema, "employees");
