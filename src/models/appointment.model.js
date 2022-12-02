@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Statuses = require("../constants/appointment-state.constants");
 
 const appointmentSchema = new mongoose.Schema(
   {
@@ -12,7 +13,15 @@ const appointmentSchema = new mongoose.Schema(
       required: true,
       ref: "Doctor",
     },
-    completed: false,
+    status: {
+      type: String,
+      default: "IN_SESSION",
+      enum: Statuses,
+    },
+    handled_by: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Admin",
+    },
   },
   {
     timestamps: {
@@ -22,6 +31,8 @@ const appointmentSchema = new mongoose.Schema(
   }
 );
 
-const Appointment= mongoose.model("Appointment", appointmentSchema, 'appointments');
-
-module.exports = Appointment;
+module.exports = mongoose.model(
+  "Appointment",
+  appointmentSchema,
+  "appointments"
+);
