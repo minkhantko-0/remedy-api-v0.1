@@ -32,12 +32,23 @@ const Service = {
     return EmployeeModel.findByIdAndUpdate(id, { avatar }, { new: true });
   },
 
-  getEmployee: async ({ id, gender, jobType, email, limit, skip, sort }) => {
+  getEmployee: async ({
+    id,
+    name,
+    gender,
+    jobType,
+    email,
+    limit,
+    skip,
+    sort,
+  }) => {
+    // TODO: create a helper for filter and option
     const filter = {};
     const options = {};
 
     if (id) filter._id = id;
     if (jobType) filter.jobType = jobType;
+    if (name) filter.name = name;
     if (email) filter.email = email;
     if (gender) filter.gender = gender;
 

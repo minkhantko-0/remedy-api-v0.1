@@ -53,7 +53,7 @@ const Handler = {
     } catch (e) {
       res
         .status(500)
-        .send({ message: "Server Error on getting patient by ID" });
+        .send({ message: "Server Error on getting employee by ID" });
     }
   },
 
@@ -61,12 +61,12 @@ const Handler = {
     try {
       const employee = await EmployeeController.updateEmployeeById(req);
       if (!employee)
-        return res.status(404).send({ message: "Patient not found!" });
+        return res.status(404).send({ message: "Employee not found!" });
       return res.send(employee);
     } catch (e) {
       return res
         .status(500)
-        .send({ message: "Server Error for updating patient!" });
+        .send({ message: "Server Error for updating employee!" });
     }
   },
 
@@ -92,7 +92,7 @@ const Handler = {
     } catch (e) {
       return res
         .status(500)
-        .send({ message: "Server Error for removing patient!" });
+        .send({ message: "Server Error for removing employee!" });
     }
   },
 };

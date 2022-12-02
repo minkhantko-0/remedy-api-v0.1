@@ -1,6 +1,10 @@
 const validator = require("validator");
 const mongoose = require("mongoose");
 
+// constants
+const Genders = require("../constants/gender.constants");
+const Specializations = require("../constants/doctor.specialization.constants");
+
 const doctorSchema = new mongoose.Schema(
   {
     name: {
@@ -22,14 +26,18 @@ const doctorSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
-    avatar: {}, //TODO: to config doctor profile
-    Gender: {
+    avatar: {
+      Type: Buffer,
+    },
+    gender: {
       type: String,
       required: true,
+      enum: Genders,
     },
     specialization: {
       type: String,
       required: true,
+      enum: Specializations,
     },
   },
   {
@@ -40,4 +48,13 @@ const doctorSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Doctor", doctorSchema, 'doctors');
+doctorSchema.methods.toJSON = function () {
+  const doctor = this;
+  const doctorObj = doctor.toObject();
+
+  delete doctorObj.avatar;
+
+  return doctorObj;
+};
+
+module.exports = mongoose.model("Doctor", doctorSchema, "doctors");

@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 
+// constants
+const Genders = require("../constants/gender.constants");
+const JobTypes = require("../constants/employee.jobtypes.constants");
+
 const EmployeeSchema = new mongoose.Schema(
   {
     name: {
@@ -9,8 +13,9 @@ const EmployeeSchema = new mongoose.Schema(
       trim: true,
     },
     dateOfBirth: {
-      type: String,
+      type: Date,
       required: true,
+      max: new Date(),
     },
     email: {
       type: String,
@@ -23,17 +28,16 @@ const EmployeeSchema = new mongoose.Schema(
     },
     avatar: {
       type: Buffer,
-      default: null,
     },
     gender: {
       type: String,
-      enum: ["male", "female"],
+      enum: Genders,
       required: true,
     },
     jobType: {
       type: String,
       required: true,
-      enum: ["NURSE", "MAINTENANCE", "SECURITY", "EMERGENCY"],
+      enum: JobTypes,
     },
   },
   {

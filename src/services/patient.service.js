@@ -32,11 +32,12 @@ const patientService = {
     return PatientModel.findByIdAndUpdate(id, { avatar }, { new: true });
   },
 
-  getPatients: async ({ id, gender, email, limit, skip, sort }) => {
+  getPatients: async ({ id, name, gender, email, limit, skip, sort }) => {
     const query = {};
     const options = {};
 
     if (id) query._id = id;
+    if (name) query.name = name;
     if (email) query.email = email;
     if (gender) query.gender = gender;
 

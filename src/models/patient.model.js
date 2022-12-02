@@ -9,8 +9,9 @@ const patientSchema = new mongoose.Schema(
       trim: true,
     },
     dateOfBirth: {
-      type: String,
+      type: Date,
       required: true,
+      max: new Date(),
     },
     email: {
       type: String,
@@ -23,7 +24,6 @@ const patientSchema = new mongoose.Schema(
     },
     avatar: {
       type: Buffer,
-      default: null,
     },
     gender: {
       type: String,
