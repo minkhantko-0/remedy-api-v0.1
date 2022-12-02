@@ -1,6 +1,9 @@
 const DoctorModel = require("../models/doctor.model");
 const sharp = require("sharp");
 
+// helpers
+const basicQueryHelper = require("../helpers/basic.handle-query.helper");
+
 const Service = {
   registerDoctor: async ({
     name,
@@ -38,30 +41,14 @@ const Service = {
     return DoctorModel.findByIdAndUpdate(id, { avatar }, { new: true });
   },
 
-  getDoctors: async ({
-    id,
-    gender,
-    specialization,
-    email,
-    limit,
-    skip,
-    sort,
-  }) => {
-    const condition = {};
-    const options = {};
+  getDoctors: async (query_obj) => {
+    const { filter, options } = basicQueryHelper(query_obj);
 
-    if (id) condition._id = id;
-    if (specialization) condition.specialization = specialization;
-    if (email) condition.email = email;
-    if (gender) condition.gender = gender;
+    const { id } = query_obj;
+    if (id) filter._id = id;
 
-    options.limit = limit ? +limit : 0;
-    options.skip = skip ? +skip : 0;
-    if (sort) {
-      options.sort = sort;
-    }
-    let data = await DoctorModel.find(condition, null, { ...options });
-    let count = await DoctorModel.find(condition, null).countDocuments();
+    let data = await DoctorModel.find(filter, null, options);
+    let count = await DoctorModel.find(filter, null).countDocuments();
 
     [data, count] = await Promise.all([data, count]);
 
@@ -74,24 +61,7 @@ const Service = {
 
   updateDoctorById: async ({ params, body }) => {
     const { id } = params;
-    const { name, dateOfBirth, email, gender, specialization } = body;
-    const updates = {};
-
-    if (specialization) {
-      updates.specialization = specialization;
-    }
-    if (name) {
-      updates.name = name;
-    }
-    if (email) {
-      updates.email = email;
-    }
-    if (dateOfBirth) {
-      updates.dateOfBirth = dateOfBirth;
-    }
-    if (gender) {
-      updates.gender = gender;
-    }
+    const { filter: updates } = basicQueryHelper(body);
 
     return DoctorModel.findByIdAndUpdate(id, updates, { new: true });
   },

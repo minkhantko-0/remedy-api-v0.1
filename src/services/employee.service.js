@@ -1,6 +1,9 @@
 const EmployeeModel = require("../models/employee.model");
 const sharp = require("sharp");
 
+// helpers
+const BasicQueryHelper = require("../helpers/basic.handle-query.helper");
+
 const Service = {
   registerEmployee: async ({ name, dateOfBirth, email, gender, jobType }) => {
     const employee = new EmployeeModel({
@@ -32,31 +35,11 @@ const Service = {
     return EmployeeModel.findByIdAndUpdate(id, { avatar }, { new: true });
   },
 
-  getEmployee: async ({
-    id,
-    name,
-    gender,
-    jobType,
-    email,
-    limit,
-    skip,
-    sort,
-  }) => {
-    // TODO: create a helper for filter and option
-    const filter = {};
-    const options = {};
+  getEmployee: async (query_obj) => {
+    const { filter, options } = BasicQueryHelper(query_obj);
 
+    const { id } = query_obj;
     if (id) filter._id = id;
-    if (jobType) filter.jobType = jobType;
-    if (name) filter.name = name;
-    if (email) filter.email = email;
-    if (gender) filter.gender = gender;
-
-    options.limit = limit ? +limit : 0;
-    options.skip = skip ? +skip : 0;
-    if (sort) {
-      options.sort = sort;
-    }
     let data = await EmployeeModel.find(filter, null, { ...options });
     let count = await EmployeeModel.find(filter, null).countDocuments();
 
@@ -71,24 +54,7 @@ const Service = {
 
   updateEmployeeById: async ({ params, body }) => {
     const { id } = params;
-    const { name, dateOfBirth, email, gender, jobType } = body;
-    const updates = {};
-
-    if (jobType) {
-      updates.jobType = jobType;
-    }
-    if (name) {
-      updates.name = name;
-    }
-    if (email) {
-      updates.email = email;
-    }
-    if (dateOfBirth) {
-      updates.dateOfBirth = dateOfBirth;
-    }
-    if (gender) {
-      updates.gender = gender;
-    }
+    const { filter: updates } = BasicQueryHelper(body);
 
     return EmployeeModel.findByIdAndUpdate(id, updates, { new: true });
   },

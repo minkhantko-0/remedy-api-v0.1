@@ -1,6 +1,10 @@
 const PatientModel = require("../models/patient.model");
 const sharp = require("sharp");
 
+// helpers
+const BasicQueryHelper = require("../helpers/basic.handle-query.helper");
+const BasicQueryHelpers = require("../helpers/basic.handle-query.helper");
+
 const patientService = {
   registerPatient: async ({ name, dateOfBirth, email, gender, diagnosis }) => {
     const patient = new PatientModel({
@@ -32,22 +36,13 @@ const patientService = {
     return PatientModel.findByIdAndUpdate(id, { avatar }, { new: true });
   },
 
-  getPatients: async ({ id, name, gender, email, limit, skip, sort }) => {
-    const query = {};
-    const options = {};
+  getPatients: async (query_obj) => {
+    const { filter, options } = BasicQueryHelpers(query_obj);
+    const id = { query_obj };
+    if (id) filter._id = id;
 
-    if (id) query._id = id;
-    if (name) query.name = name;
-    if (email) query.email = email;
-    if (gender) query.gender = gender;
-
-    options.limit = limit ? +limit : 0;
-    options.skip = skip ? +skip : 0;
-    if (sort) {
-      options.sort = sort;
-    }
-    let data = await PatientModel.find(query, null, { ...options });
-    let count = await PatientModel.find(query, null).countDocuments();
+    let data = await PatientModel.find(filter, null, { ...options });
+    let count = await PatientModel.find(filter, null).countDocuments();
 
     [data, count] = await Promise.all([data, count]);
 
@@ -60,24 +55,7 @@ const patientService = {
 
   updatePatientById: async ({ params, body }) => {
     const { id } = params;
-    const { name, dateOfBirth, email, gender, diagnosis } = body;
-    const updates = {};
-
-    if (name) {
-      updates.name = name;
-    }
-    if (email) {
-      updates.email = email;
-    }
-    if (dateOfBirth) {
-      updates.dateOfBirth = dateOfBirth;
-    }
-    if (gender) {
-      updates.gender = gender;
-    }
-    if (diagnosis) {
-      updates.diagnosis = diagnosis;
-    }
+    const { filter: updates } = BasicQueryHelper(body);
 
     return PatientModel.findByIdAndUpdate(id, updates, { new: true });
   },

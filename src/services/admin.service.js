@@ -1,5 +1,8 @@
 const AdminModel = require("../models/admin.model");
 
+// helpers
+const BasicQueryHelpers = require("../helpers/basic.handle-query.helper");
+
 const adminService = {
   createAdmin: async ({ name, email, password }) => {
     const admin = new AdminModel({ name, email, password });
@@ -29,21 +32,13 @@ const adminService = {
     await admin.save();
   },
 
-  getAdmins: async ({ name, _id, limit, skip, sort }) => {
-    const options = {};
-    const query = {};
+  getAdmins: async (query_obj) => {
+    const { filter, options } = BasicQueryHelpers(query_obj);
+    const { _id } = query_obj;
+    if (_id) filter._id = _id;
 
-    if (name) query.name = name;
-    if (_id) query._id = _id;
-
-    options.limit = limit ? +limit : 0;
-    options.skip = skip ? +skip : 0;
-    if (sort) {
-      options.sort = sort;
-    }
-
-    let data = await AdminModel.find(query, null, { ...options });
-    let count = await AdminModel.find(query).countDocuments();
+    let data = await AdminModel.find(filter, null, options);
+    let count = await AdminModel.find(filter).countDocuments();
 
     [data, count] = await Promise.all([data, count]);
 
@@ -55,19 +50,7 @@ const adminService = {
 
   updateAdmin: async ({ params, body }) => {
     const { id } = params;
-    const { name, password, email } = body;
-    const updates = {};
-
-    if (name) {
-      updates.name = name;
-    }
-
-    if (email) {
-      updates.email = email;
-    }
-    if (password) {
-      updates.password = password;
-    }
+    const { filter: updates } = BasicQueryHelpers(body);
 
     return AdminModel.findByIdAndUpdate(id, updates, { new: true });
   },
