@@ -1,4 +1,4 @@
-const diagnostics_channel = require("diagnostics_channel");
+
 const BasicHelper = {
   handleQuery: ({
     name,

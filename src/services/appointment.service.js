@@ -9,8 +9,8 @@ const Service = {
     return await appointment.save();
   },
 
-  getAppointments: async (body) => {
-    const { filter, options } = queryHandlingHelper(body);
+  getAppointments: async (query_obj) => {
+    const { filter, options } = queryHandlingHelper(query_obj);
 
     let data = await AppointmentModel.find(filter, null, options);
     let count = await AppointmentModel.find(filter, null).countDocuments();

@@ -8,8 +8,8 @@ const Controller = {
     });
   },
 
-  getAppointments: async ({ body }) => {
-    return await AppointmentService.getAppointments(body);
+  getAppointments: async (req) => {
+    return await AppointmentService.getAppointments(req);
   },
 
   getAppointmentById: async ({ params }) => {
